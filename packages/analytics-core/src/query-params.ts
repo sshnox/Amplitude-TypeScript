@@ -8,9 +8,12 @@ export const getQueryParams = (): Record<string, string | undefined> => {
   }
   const pairs = globalScope.location.search.substring(1).split('&').filter(Boolean);
   const params = pairs.reduce<Record<string, string | undefined>>((acc, curr) => {
-    const query = curr.split('=', 2);
-    const key = tryDecodeURIComponent(query[0]);
-    const value = tryDecodeURIComponent(query[1]);
+    const separatorIndex = curr.indexOf('=');
+    if (separatorIndex === -1) {
+      return acc;
+    }
+    const key = tryDecodeURIComponent(curr.slice(0, separatorIndex).replace(/\+/g, ' '));
+    const value = tryDecodeURIComponent(curr.slice(separatorIndex + 1).replace(/\+/g, ' '));
     if (!value) {
       return acc;
     }
