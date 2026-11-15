@@ -55,6 +55,15 @@ describe('query-params', () => {
       });
     });
 
+    test('should keep percent-encoded plus signs literal while decoding separator plus signs', () => {
+      window.location.search = '?utm_term=C%2B%2B+SDK&token=one=two=three&flag';
+      const params = getQueryParams();
+      expect(params).toEqual({
+        utm_term: 'C++ SDK',
+        token: 'one=two=three',
+      });
+    });
+
     test('should parse malformed uri', () => {
       window.location.search = '?fb=X+%EF%BF%BD%93+C';
       const params = getQueryParams();
