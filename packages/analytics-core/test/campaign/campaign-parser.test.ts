@@ -24,6 +24,21 @@ beforeAll(() => {
 
 describe('campaign-parser', () => {
   describe('parse', () => {
+    test('should preserve decoded campaign parameters and click identifiers', async () => {
+      const parser = new CampaignParser();
+      window.location.search = '?utm_source=news+letter&utm_term=running+shoes&utm_content=a%3Db=c&gclid=abc==';
+
+      const campaign = await parser.parse();
+      expect(campaign).toEqual(
+        expect.objectContaining({
+          utm_source: 'news letter',
+          utm_term: 'running shoes',
+          utm_content: 'a=b=c',
+          gclid: 'abc==',
+        }),
+      );
+    });
+
     test('should return parameters', async () => {
       const parser = new CampaignParser();
       const referringDomain = 'https://google.com';
